@@ -36,9 +36,9 @@ locations = [
 
 # Options for sens/spec for AVE as primary - comment out any not to run
 ave_primary_ss = [
-    #[0.90,0.83],
+    [0.90,0.83],
     [0.82,0.86],
-    #[0.62,0.86],
+    [0.62,0.86],
     #new test sens/spec
    #[0.72,0.83],
    #[0.92,0.83],
@@ -271,12 +271,12 @@ if __name__ == '__main__':
                 # screen_scens[f'AVE_0.7,0.3, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7,treat_prob=0.3)
 
         #Varied screening probabilities, same ltfu
-                # screen_scens[f'AVE_0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
-                #                                                                       screen_coverage=0.2)
-                # screen_scens[f'AVE_0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals, screen_coverage = 0.4)
-                # screen_scens[f'AVE_0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
-                #                                                                  screen_coverage=0.6)
-                screen_scens[f'AVE_0.7, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                 screen_scens[f'AVE_0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                                                                                       screen_coverage=0.2)
+                 screen_scens[f'AVE_0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals, screen_coverage = 0.4)
+                 screen_scens[f'AVE_0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                                                                                  screen_coverage=0.6)
+                 screen_scens[f'AVE_0.7, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
                                                                                        screen_coverage=0.7)
 #Varied loss to follow up
                 # screen_scens[f'AVE_ltfu0.0, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
