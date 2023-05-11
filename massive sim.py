@@ -272,13 +272,13 @@ if __name__ == '__main__':
                 # screen_scens[f'AVE_0.7,0.3, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7,treat_prob=0.3)
 
         #Varied screening probabilities, same ltfu
-                screen_scens[f'AVE_0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
-                                                                                       screen_coverage=0.2)
-                screen_scens[f'AVE_0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals, screen_coverage = 0.4)
-                screen_scens[f'AVE_0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
-                                                                                  screen_coverage=0.6)
-                screen_scens[f'AVE_0.7, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
-                                                                                       screen_coverage=0.7)
+#                 screen_scens[f'AVE_0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+#                                                                                        screen_coverage=0.2)
+#                 screen_scens[f'AVE_0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals, screen_coverage = 0.4)
+#                 screen_scens[f'AVE_0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+#                                                                                   screen_coverage=0.6)
+#                 screen_scens[f'AVE_0.7, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+#                                                                                        screen_coverage=0.7)
 #Varied loss to follow up
                 # screen_scens[f'AVE_ltfu0.0, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
                 #                                                                       treat_prob=0.0)
