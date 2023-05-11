@@ -1,6 +1,7 @@
 '''
 Running from 2025 to 2060, varying screening probabilities, ltfu and vaccinations
-Run HPVsim scenarios for each location.
+Run HPVsim scenarios for each location. 
+
 
 Note: requires an HPC to run with debug=False; with debug=True, should take 5-15 min
 to run.
@@ -24,7 +25,7 @@ import analyzers as an
 # Comment out to not run
 to_run = [
     'run_scenarios',
-  #'plot_scenarios',
+    #'plot_scenarios',
 ]
 
 # Comment out locations to not run
@@ -36,13 +37,12 @@ locations = [
 
 # Options for sens/spec for AVE as primary - comment out any not to run
 ave_primary_ss = [
-    #[0.90,0.83],
-    #[0.82,0.86],
-    #[0.62,0.86],
-    #additional sens/spec
+    [0.90,0.83],
+    [0.82,0.86],
+    [0.62,0.86],
+    #new test sens/spec
    #[0.72,0.83],
    #[0.92,0.83],
-
 ]
 
 # Options for sens/spec for AVE as triage - comment out any not to run
@@ -57,17 +57,14 @@ n_seeds = [5, 1][debug] # How many seeds to use for stochasticity in projections
 
 #%% Functions
 
-#if vaccine not included, vaccine = True
-def run_scens(location=None, screen_scens=None, vaccine=True,  # Input data
-              debug=0, n_seeds=2, verbose=-1  # Sim settings
+def run_scens(location=None, screen_scens=None, vaccine=True, # Input data
+              debug=0, n_seeds=2, verbose=-1# Sim settings
               ):
-
     '''
     Run all screening/triage product scenarios for a given location
     '''
-    # All scenarios assume scaled-up prophylactic vaccination coverage, however code below was adjusted to exclude vaccinations
-
     if vaccine:
+    # All scenarios assume scaled-up prophylactic vaccination coverage
         try:
             vaccination_coverage = sc.loadobj(f'{ut.datafolder}/vaccination_coverage.obj')
         except:
@@ -75,7 +72,6 @@ def run_scens(location=None, screen_scens=None, vaccine=True,  # Input data
             raise ValueError(errormsg)
     else:
         vaccination_coverage=None
-
     # Set up iteration arguments
     ikw = []
     count = 0
@@ -214,23 +210,23 @@ if __name__ == '__main__':
             # AVE as triage         : HPV+AVE, POCHPV+AVE (2x 2 sens/spec combos)
             screen_scens = sc.objdict({
                 'No screening': dict(),
-            #     'HPV, 93%/70%': dict(
-            #         primary=dict(
-            #             precin=0.3,
-            #             cin1=0.3,
-            #             cin2=0.93,
-            #             cin3=0.93,
-            #             cancerous=0.93
-            #         ),
-            #     ),
-            #     'VIA, 30%/75%': dict(
-            #         primary=dict(
-            #             precin=0.25,
-            #             cin1=0.25,
-            #            cin3=0.3,
-            #             cancerous=0.3
-            #         )
-            #     )
+                 'HPV, 93%/70%': dict(
+                     primary=dict(
+                         precin=0.3,
+                         cin1=0.3,
+                         cin2=0.93,
+                         cin3=0.93,
+                         cancerous=0.93
+                     ),
+                 ),
+                 'VIA, 30%/75%': dict(
+                     primary=dict(
+                         precin=0.25,
+                         cin1=0.25,
+                        cin3=0.3,
+                         cancerous=0.3
+                     )
+                 )
              })
             test_calibration = pd.read_csv(f'results/{location}_sens_calibration_results.csv')
             for sens, spec in ave_primary_ss:
@@ -263,38 +259,71 @@ if __name__ == '__main__':
                 screen_scens[f'AVE_0.7,0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7, treat_prob=0.4)
                 screen_scens[f'AVE_0.7,0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7, treat_prob=0.2)
 
-            # for sens, spec in ave_triage_ss:
-            #     test_pos_vals = {
-            #         'precin': 1 - spec,
-            #         'cin1': 1 - spec,
-            #         'cin2': sens,
-            #         'cin3': sens,
-            #         'cancerous': sens
-            #     }
-            #     for poc, ltfu in poc_ltfus.items():
-            #         screen_scens[f'{poc}+AVE, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=dict(
-            #             precin=0.3,
-            #             cin1=0.3,
-            #             cin2=0.93,
-            #             cin3=0.93,
-            #             cancerous=0.93
-            #         ), triage=test_pos_vals, ltfu=ltfu)
-            # for poc, ltfu in poc_ltfus.items():
-            #     screen_scens[f'{poc}+VIA, 25%/56%'] = dict(primary=dict(
-            #         precin=0.3,
-            #         cin1=0.3,
-            #         cin2=0.93,
-            #         cin3=0.93,
-            #         cancerous=0.93
-            #     ), triage=dict(
-            #         precin=0.25,
-            #         cin1=0.25,
-            #         cin2=0.3,
-            #         cin3=0.3,
-            #         cancerous=0.3
-            #     ), ltfu=ltfu)
+            #additional scenarios
 
-            alldf, msims = run_scens(screen_scens=screen_scens, n_seeds=n_seeds, location=location, debug=debug)
+                # screen_scens[f'AVE_0.4,0.9, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.4,treat_prob=0.9)
+                # screen_scens[f'AVE_0.4,0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.4,treat_prob=0.6)
+                # screen_scens[f'AVE_0.4,0.3, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.4,treat_prob=0.3)
+                # screen_scens[f'AVE_0.6,0.9, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.6,treat_prob=0.9)
+                # screen_scens[f'AVE_0.6,0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.6,treat_prob=0.6)
+                # screen_scens[f'AVE_0.6,0.3, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.6,treat_prob=0.3)
+                # screen_scens[f'AVE_0.7,0.9, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7,treat_prob=0.9)
+                # screen_scens[f'AVE_0.7,0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7,treat_prob=0.6)
+                # screen_scens[f'AVE_0.7,0.3, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,screen_coverage=0.7,treat_prob=0.3)
+
+        #Varied screening probabilities, same ltfu
+                screen_scens[f'AVE_0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                                                                                       screen_coverage=0.2)
+                screen_scens[f'AVE_0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals, screen_coverage = 0.4)
+                screen_scens[f'AVE_0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                                                                                  screen_coverage=0.6)
+                screen_scens[f'AVE_0.7, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                                                                                       screen_coverage=0.7)
+#Varied loss to follow up
+                # screen_scens[f'AVE_ltfu0.0, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.0)
+                # screen_scens[f'AVE_ltfu0.2, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.2)
+                # screen_scens[f'AVE_ltfu0.4, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.4)
+                # screen_scens[f'AVE_ltfu0.6, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.6)
+                # screen_scens[f'AVE_ltfu0.8, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.8)
+                # screen_scens[f'AVE_ltfu0.9, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=test_pos_vals,
+                #                                                                       treat_prob=0.9)
+
+            #for sens, spec in ave_triage_ss:
+             #   test_pos_vals = {
+              #      'precin': 1 - spec,
+               #     'cin1': 1 - spec,
+                #    'cin2': sens,
+                 #   'cin3': sens,
+                  #  'cancerous': sens
+                #}
+                #for poc, ltfu in poc_ltfus.items():
+                 #   screen_scens[f'{poc}+AVE, {int(sens * 100)}%/{int(spec * 100)}%'] = dict(primary=dict(
+                  #      precin=0.3,
+                   #     cin1=0.3,
+                    #    cin2=0.93,
+                     #   cin3=0.93,
+                      #  cancerous=0.93
+                   # ), triage=test_pos_vals, ltfu=ltfu)
+            #for poc, ltfu in poc_ltfus.items():
+             #   screen_scens[f'{poc}+VIA, 25%/56%'] = dict(primary=dict(
+              #      precin=0.3,
+               #     cin1=0.3,
+                #    cin2=0.93,
+                 #   cin3=0.93,
+                 #   cancerous=0.93
+               # ), triage=dict(
+                #    precin=0.25,
+                 #   cin1=0.25,
+                  #  cin2=0.3,
+                  #  cin3=0.3,
+                  #  cancerous=0.3
+               # ), ltfu=ltfu)
+            alldf, msims = run_scens(screen_scens=screen_scens, n_seeds=n_seeds, location=location, debug=debug, vaccine=False)
             alldfs += alldf
             sc.saveobj(f'{ut.resfolder}/{location}_{filestem}_massive_sim.obj', alldf)
 
@@ -302,48 +331,48 @@ if __name__ == '__main__':
         sc.saveobj(f'{ut.resfolder}/{filestem}_massive_sim.obj', bigdf)
 
     # Plot results of scenarios
-    # if 'plot_scenarios' in to_run:
-    #     for location in locations:
-    #         # First plot: comparing AVE as a primary screen to existing primary screen options
-    #         ut.plot_residual_burden(
-    #             filestem='screening_results',
-    #             locations=[location],
-    #             scens=['No screening', 'HPV, 93%/70%', 'VIA, 30%/75%', 'AVE, 90%/83%', 'AVE, 82%/86%', 'AVE, 62%/86%'],
-    #             fig_filestem=f'ave_primary_{location}'
-    #         )
-    #
-    #         # Second plot: comparing AVE as a triage screen against existing triage options
-    #         ut.plot_residual_burden(
-    #             filestem='screening_results',
-    #             locations=[location],
-    #             scens=['No screening', 'HPV+VIA, 25%/56%', 'HPV+AVE, 95%/55%', 'HPV+AVE, 90%/70%'],
-    #             fig_filestem=f'ave_triage_{location}'
-    #         )
-    #
-    #         # Third plot: Evaluating impact of POC
-    #         ut.plot_residual_burden(
-    #             filestem='screening_results',
-    #             locations=[location],
-    #             scens=['No screening', 'HPV+VIA', 'HPV+AVE, 95%/55%', 'POC-HPV+VIA', 'POC-HPV+AVE, 95%/55%'],
-    #             fig_filestem=f'poc_effect_{location}'
-    #         )
-    #
-    #
-    #     ut.plot_ICER(
-    #         filestem='screening_results',
-    #         locations=['india', 'nigeria', 'tanzania'],
-    #         scens=[
-    #             'HPV',
-    #             'VIA',
-    #             'AVE, 90%/83%',
-    #             'AVE, 82%/86%',
-    #             'AVE, 62%/86%',
-    #             'HPV+VIA',
-    #             'HPV+AVE, 95%/55%',
-    #             'HPV+AVE, 90%/70%',
-    #             'POC HPV+VIA',
-    #             'POC HPV+AVE, 95%/55%',
-    #             'POC HPV+AVE, 90%/70%',
-    #         ],
-    #         fig_filestem='icer'
-    #     )
+    if 'plot_scenarios' in to_run:
+        for location in locations:
+            # First plot: comparing AVE as a primary screen to existing primary screen options
+            ut.plot_residual_burden(
+                filestem='screening_results',
+                locations=[location],
+                scens=['No screening', 'HPV, 93%/70%', 'VIA, 30%/75%', 'AVE, 90%/83%', 'AVE, 82%/86%', 'AVE, 62%/86%'],
+                fig_filestem=f'ave_primary_{location}'
+            )
+
+            # Second plot: comparing AVE as a triage screen against existing triage options
+            ut.plot_residual_burden(
+                filestem='screening_results',
+                locations=[location],
+                scens=['No screening', 'HPV+VIA, 25%/56%', 'HPV+AVE, 95%/55%', 'HPV+AVE, 90%/70%'],
+                fig_filestem=f'ave_triage_{location}'
+            )
+
+            # Third plot: Evaluating impact of POC
+            ut.plot_residual_burden(
+                filestem='screening_results',
+                locations=[location],
+                scens=['No screening', 'HPV+VIA', 'HPV+AVE, 95%/55%', 'POC-HPV+VIA', 'POC-HPV+AVE, 95%/55%'],
+                fig_filestem=f'poc_effect_{location}'
+            )
+
+
+        ut.plot_ICER(
+            filestem='screening_results',
+            locations=['india', 'nigeria', 'tanzania'],
+            scens=[
+                'HPV',
+                'VIA',
+                'AVE, 90%/83%',
+                'AVE, 82%/86%',
+                'AVE, 62%/86%',
+                'HPV+VIA',
+                'HPV+AVE, 95%/55%',
+                'HPV+AVE, 90%/70%',
+                'POC HPV+VIA',
+                'POC HPV+AVE, 95%/55%',
+                'POC HPV+AVE, 90%/70%',
+            ],
+            fig_filestem='icer'
+        )
